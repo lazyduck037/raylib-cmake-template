@@ -1,4 +1,7 @@
 #include "raylib.h"
+#include "background.h"
+#include "resource.h"
+#include "context.h"
 
 #define SCREEN_WIDTH (720)
 #define SCREEN_HEIGHT (1080)
@@ -7,33 +10,40 @@
 
 Rectangle fitScreen(int widthTex, int heightTex, int wScr, int hScr);
 float fitScale(int widthTex, int heightTex, int wScr, int hScr);
+void InitContex();
 int main(void)
 {
-    float currentBackgroundPosition = 0;
-    int screenWidth = SCREEN_WIDTH;
-    int screenHeight = SCREEN_HEIGHT;
+    InitContex();
+    int widthScreen = GetContext()->widthScreen;
+    int heightScreen = GetContext()->heightScreen;
 
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
-    Image backgroundImage = LoadImage(ASSETS_PATH"/background/background-day.png");
-    Texture2D backgroundTexture = LoadTextureFromImage(backgroundImage);
-    UnloadImage(backgroundImage);
+    Background *bg = makeBackGround(BACKGROUND_DAY, 300);
+    bg->width = widthScreen;
+    bg->height = heightScreen;
 
-    SetTargetFPS(60);
+    Background *baseBg = makeBackGround(BACKGROUND_BASE, 300);
+    baseBg->pos.x = 0;
+    baseBg->pos.y = heightScreen - baseBg->tex.height;
+    baseBg->width = widthScreen;
 
-    float bgScale = fitScale(backgroundTexture.width, backgroundTexture.height, screenWidth, screenHeight);
-    Rectangle bgRec = fitScreen(backgroundTexture.width, backgroundTexture.height, screenWidth, screenHeight);
-    Rectangle bgSrc = (Rectangle) {0,0,backgroundTexture.width, backgroundTexture.height};
+
+    SetTargetFPS(30);
+
     while (!WindowShouldClose())
     {
         BeginDrawing();
-
-        ClearBackground(RAYWHITE);
-        
-        DrawTextureRec(backgroundTexture, (Rectangle){0,0,(float)screenWidth, (float)screenHeight}, (Vector2){0,0}, RAYWHITE);
+            ClearBackground(RAYWHITE);
+            float frameTime = GetFrameTime();
+            
+            BackgroundDraw(bg, frameTime);
+            BackgroundDraw(baseBg, frameTime);
+            // DrawFPS(widthScreen - 25, 0);
+          
+        EndDrawing();
     }
     
     CloseWindow();
-
+   
     return 0;
 }
 
@@ -72,4 +82,14 @@ float fitScale(int widthTex, int heightTex, int wScr, int hScr)
     {
         return hScr * 1.0f / heightTex;
     }
+}
+
+void InitContex()
+{
+    GetContext()->widthScreen = SCREEN_WIDTH;
+    GetContext()->heightScreen = SCREEN_HEIGHT;
+    GetContext()->title = WINDOW_TITLE;
+
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
+
 }
