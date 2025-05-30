@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(my_raylib_game C)
 set(CMAKE_C_STANDARD 99)
-
+SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 # Adding Raylib
 include(FetchContent)
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples

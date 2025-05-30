@@ -1,35 +1,75 @@
 #include "raylib.h"
 
-#define SCREEN_WIDTH (800)
-#define SCREEN_HEIGHT (450)
+#define SCREEN_WIDTH (720)
+#define SCREEN_HEIGHT (1080)
 
 #define WINDOW_TITLE "Window title"
 
+Rectangle fitScreen(int widthTex, int heightTex, int wScr, int hScr);
+float fitScale(int widthTex, int heightTex, int wScr, int hScr);
 int main(void)
 {
+    float currentBackgroundPosition = 0;
+    int screenWidth = SCREEN_WIDTH;
+    int screenHeight = SCREEN_HEIGHT;
+
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
+    Image backgroundImage = LoadImage(ASSETS_PATH"/background/background-day.png");
+    Texture2D backgroundTexture = LoadTextureFromImage(backgroundImage);
+    UnloadImage(backgroundImage);
+
     SetTargetFPS(60);
 
-    Texture2D texture = LoadTexture(ASSETS_PATH"test.png"); // Check README.md for how this works
-
+    float bgScale = fitScale(backgroundTexture.width, backgroundTexture.height, screenWidth, screenHeight);
+    Rectangle bgRec = fitScreen(backgroundTexture.width, backgroundTexture.height, screenWidth, screenHeight);
+    Rectangle bgSrc = (Rectangle) {0,0,backgroundTexture.width, backgroundTexture.height};
     while (!WindowShouldClose())
     {
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
-
-        const int texture_x = SCREEN_WIDTH / 2 - texture.width / 2;
-        const int texture_y = SCREEN_HEIGHT / 2 - texture.height / 2;
-        DrawTexture(texture, texture_x, texture_y, WHITE);
-
-        const char* text = "OMG! IT WORKS!";
-        const Vector2 text_size = MeasureTextEx(GetFontDefault(), text, 20, 1);
-        DrawText(text, SCREEN_WIDTH / 2 - text_size.x / 2, texture_y + texture.height + text_size.y + 10, 20, BLACK);
-
-        EndDrawing();
+        
+        DrawTextureRec(backgroundTexture, (Rectangle){0,0,(float)screenWidth, (float)screenHeight}, (Vector2){0,0}, RAYWHITE);
     }
-
+    
     CloseWindow();
 
     return 0;
+}
+
+Rectangle fitScreen(int widthTex, int heightTex, int wScr, int hScr)
+{
+    float ratioOfScreen = wScr * 1.0f / hScr;
+    float ratioOfBg = widthTex * 1.0f / heightTex;
+    // Full width
+
+    int heightTexWillBeIfFullWidth = (int)(wScr * 1.0f / ratioOfBg);
+    if (heightTexWillBeIfFullWidth >= hScr)
+    {
+
+        // return (Rectangle){0, (hScr - heightTexWillBeIfFullWidth) / 2, wScr, heightTexWillBeIfFullWidth};
+          return (Rectangle){0, 0, wScr, heightTexWillBeIfFullWidth};
+    }
+    else
+    {
+        int widthTexWillBeIfFullHeight = (int)(hScr * ratioOfBg);
+        return (Rectangle){(wScr - widthTexWillBeIfFullHeight) / 2, 0, widthTexWillBeIfFullHeight, hScr};
+    }
+}
+
+float fitScale(int widthTex, int heightTex, int wScr, int hScr)
+{
+    float ratioOfScreen = wScr * 1.0f / hScr;
+    float ratioOfBg = widthTex * 1.0f / heightTex;
+    // Full width
+
+    int heightTexWillBeIfFullWidth = (int)(wScr * 1.0f / ratioOfBg);
+    if (heightTexWillBeIfFullWidth >= hScr)
+    {
+        return wScr * 1.0f / widthTex;
+    }
+    else
+    {
+        return hScr * 1.0f / heightTex;
+    }
 }
