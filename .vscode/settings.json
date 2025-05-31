@@ -1,0 +1,22 @@
+{
+    "files.associations": {
+        "raylib.h": "c",
+        "background.h": "c",
+        "sstream": "c",
+        "stdlib.h": "c",
+        "context.h": "c",
+        "*.m": "c",
+        "const.h": "c",
+        "resource.h": "c",
+        "character.h": "c",
+        "define.h": "c",
+        "array": "c",
+        "charconv": "c",
+        "compare": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "variant": "c"
+    }
+}
