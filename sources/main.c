@@ -1,8 +1,9 @@
 #include "raylib.h"
 #include "background.h"
-#include "character.h"
+#include "bird.h"
 #include "resource.h"
 #include "context.h"
+#include "pipe.h"
 
 Rectangle fitScreen(int widthTex, int heightTex, int wScr, int hScr);
 float fitScale(int widthTex, int heightTex, int wScr, int hScr);
@@ -12,7 +13,7 @@ void InitContex()
     getContext()->widthScreen = 720;
     getContext()->heightScreen = 1080;
     getContext()->title = "window";
-    getContext()->fps = 30;
+    getContext()->fps = 60;
 }
 
 int main(void)
@@ -32,11 +33,12 @@ int main(void)
 
     Background *baseBg = makeBackGround(BACKGROUND_BASE, 300);
     baseBg->pos.x = 0;
-     baseBg->pos.y = heightScreen - baseBg->tex.height;
+    baseBg->pos.y = heightScreen - baseBg->tex.height;
     baseBg->width = widthScreen;
 
-    Character *character = makeCharacter(BLUE_BIRD_UPFLAP, BLUE_BIRD_MIDFLAP, BLUE_BIRD_DOWNFLAP);
-
+    Bird *bird = makeBird(BLUE_BIRD_UPFLAP, BLUE_BIRD_MIDFLAP, BLUE_BIRD_DOWNFLAP);
+    
+    makePipes(PIPE_SCREEN);
     SetTargetFPS(fps);
 
     while (!WindowShouldClose())
@@ -48,8 +50,9 @@ int main(void)
             
             BackgroundDraw(bg, frameTime);
             BackgroundDraw(baseBg, frameTime);
-            drawCharacter(character);
-            inputControl(character, frameTime);
+            drawBird(bird, frameTime);
+            inputControl(bird, frameTime);
+            drawPipe();
 
             DrawFPS(widthScreen - 25, 0);
           
@@ -58,7 +61,7 @@ int main(void)
 
     ReleaseBackGround(baseBg);
     ReleaseBackGround(bg);
-    releaseCharacter(character);
+    releaseBird(bird);
     CloseWindow();
    
     return 0;

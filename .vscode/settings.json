@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "character.h": "c",
+        "define.h": "c",
+        "bird.h": "c",
+        "background.h": "c",
+        "context.h": "c",
+        "pipe.h": "c",
+        "raylib.h": "c"
+    }
+}

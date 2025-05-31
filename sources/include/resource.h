@@ -9,5 +9,7 @@
 #define BLUE_BIRD_MIDFLAP ASSETS_PATH"sprites/bluebird-midflap.png"
 #define BLUE_BIRD_DOWNFLAP ASSETS_PATH"sprites/bluebird-downflap.png"
 
+#define PIPE_SCREEN ASSETS_PATH"sprites/pipe-green.png"
+
 #endif
 
