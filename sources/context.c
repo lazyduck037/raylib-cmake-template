@@ -3,10 +3,11 @@
 Context g_context = {
     .widthScreen = 0,
     .heightScreen = 0.0f,
-    .title = "title"
+    .title = "title",
+    .fps = 60,
 };
 
 
-Context* GetContext(void) {
+Context* getContext(void) {
     return &g_context;
 }

@@ -5,9 +5,10 @@ struct Context {
     int widthScreen;
     int heightScreen;
     char* title;
+    int fps;
 };
 typedef struct Context Context;
 
-Context* GetContext(void);
+Context* getContext(void);
 
 #endif

@@ -1,21 +1,30 @@
 #include "raylib.h"
 #include "background.h"
+#include "character.h"
 #include "resource.h"
 #include "context.h"
 
-#define SCREEN_WIDTH (720)
-#define SCREEN_HEIGHT (1080)
-
-#define WINDOW_TITLE "Window title"
-
 Rectangle fitScreen(int widthTex, int heightTex, int wScr, int hScr);
 float fitScale(int widthTex, int heightTex, int wScr, int hScr);
-void InitContex();
+
+void InitContex()
+{
+    getContext()->widthScreen = 720;
+    getContext()->heightScreen = 1080;
+    getContext()->title = "window";
+    getContext()->fps = 30;
+}
+
 int main(void)
 {
     InitContex();
-    int widthScreen = GetContext()->widthScreen;
-    int heightScreen = GetContext()->heightScreen;
+    
+    int widthScreen = getContext()->widthScreen;
+    int heightScreen = getContext()->heightScreen;
+    char *title = getContext()->title;
+    int fps = getContext()->fps;
+
+    InitWindow(widthScreen, heightScreen, title);
 
     Background *bg = makeBackGround(BACKGROUND_DAY, 300);
     bg->width = widthScreen;
@@ -23,25 +32,33 @@ int main(void)
 
     Background *baseBg = makeBackGround(BACKGROUND_BASE, 300);
     baseBg->pos.x = 0;
-    baseBg->pos.y = heightScreen - baseBg->tex.height;
+     baseBg->pos.y = heightScreen - baseBg->tex.height;
     baseBg->width = widthScreen;
 
+    Character *character = makeCharacter(BLUE_BIRD_UPFLAP, BLUE_BIRD_MIDFLAP, BLUE_BIRD_DOWNFLAP);
 
-    SetTargetFPS(30);
+    SetTargetFPS(fps);
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
+
             ClearBackground(RAYWHITE);
             float frameTime = GetFrameTime();
             
             BackgroundDraw(bg, frameTime);
             BackgroundDraw(baseBg, frameTime);
-            // DrawFPS(widthScreen - 25, 0);
+            drawCharacter(character);
+            inputControl(character, frameTime);
+
+            DrawFPS(widthScreen - 25, 0);
           
         EndDrawing();
     }
-    
+
+    ReleaseBackGround(baseBg);
+    ReleaseBackGround(bg);
+    releaseCharacter(character);
     CloseWindow();
    
     return 0;
@@ -82,14 +99,4 @@ float fitScale(int widthTex, int heightTex, int wScr, int hScr)
     {
         return hScr * 1.0f / heightTex;
     }
-}
-
-void InitContex()
-{
-    GetContext()->widthScreen = SCREEN_WIDTH;
-    GetContext()->heightScreen = SCREEN_HEIGHT;
-    GetContext()->title = WINDOW_TITLE;
-
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
-
 }

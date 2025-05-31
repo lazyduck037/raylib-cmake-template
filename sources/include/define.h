@@ -3,6 +3,6 @@
 
 #define IVEC2 (Vector2){0, 0}
 #define VEC2(x,y) (Vector2){x, y}
-#define REC(x,y,w,h) (Rectangle) {x,y, w, h}
+#define REC(x,y,w,h) (Rectangle){x,y, w, h}
 
 #endif

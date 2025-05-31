@@ -1,5 +1,4 @@
 #include "background.h"
-#include <stdlib.h>
 #include "define.h"
 
 Background* makeBackGround(const char* source, int speed) 
@@ -12,7 +11,7 @@ Background* makeBackGround(const char* source, int speed)
 
     bg->speed = speed;
     bg->tex = backgroundTexture;
-    bg->context = GetContext();
+    bg->context = getContext();
     bg->pos = IVEC2;
     bg->width = backgroundTexture.width;
     bg->height = backgroundTexture.height;
@@ -33,7 +32,11 @@ void BackgroundDraw(Background *bg, float frameTime) {
     if(isMove) {
         bg->currentPosMove += (frameSpeed/2);
         if(bg->currentPosMove >= widthScreen)
-            bg->currentPosMove -= widthScreen;
+            bg->currentPosMove = 0;
     }
 }
 
+void ReleaseBackGround(Background *bg) 
+{
+    RL_FREE(bg);
+}

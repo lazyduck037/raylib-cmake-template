@@ -3,8 +3,9 @@
 
 #include "raylib.h"
 #include "context.h"
+#include <stdlib.h>
 
-struct Background
+typedef struct Background
 {
     float speed;
     Vector2 pos;
@@ -12,10 +13,11 @@ struct Background
     Texture2D tex;
     float currentPosMove;
     Context *context;
-};
-typedef struct Background Background;
+} Background;
+
 
 Background* makeBackGround(const char* source, int speed);
 void BackgroundDraw(Background *bg, float frameTime);
+void ReleaseBackGround(Background *bg);
 
 #endif // MACRO
