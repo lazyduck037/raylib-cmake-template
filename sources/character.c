@@ -9,15 +9,16 @@
 float mElapsedUpTime = 0.0f;
 float mElapsedTime = 0.0f;
 float mGraviationSpeed = 45.0f;
-float Gravity = 2000.0f; //100 pixel / s2
+const float Gravity = 2000.0f; //100 pixel / s2
+const float GravityUp = 8 * Gravity; 
 
 bool isStart = false;
 
-static Vector2 moveUp(Character * character, float frameTime) 
+static void moveUp(Character * character, float frameTime) 
 {
     if(character->state != CHAR_STATE_UP)
     {
-        character->currentSpeed = 0.0f;
+        character->currentSpeed = GravityUp * frameTime;
         mElapsedTime = frameTime;
         mElapsedUpTime = frameTime;
     }
@@ -28,13 +29,11 @@ static Vector2 moveUp(Character * character, float frameTime)
 
     character->state = CHAR_STATE_UP;
     //v0t + 0.5at2 
-    float s = character->currentSpeed * mElapsedTime + 0.5f * Gravity * (mElapsedTime * mElapsedTime);
-    character->currentSpeed = character->currentSpeed + Gravity * mElapsedTime;
+    float s = character->currentSpeed * mElapsedTime + (GravityUp * GravityUp * mElapsedTime * mElapsedTime) / (2 * Gravity);
+    character->currentSpeed = character->currentSpeed - GravityUp * mElapsedTime;
     DrawText(TextFormat("%f", character->currentSpeed), 300, 80, 30, WHITE);
     DrawText(TextFormat("%f",s), 300, 160, 30, WHITE);
-    character->location.y -= s ;
-    
-    return character->location;
+    character->location.y -= s;
 }
 
 void static gravitationModifier(Character * character, float frameTime) {
@@ -122,7 +121,7 @@ void inputControl(Character *character, float frameTime)
         //  gravitationModifier(character, frameTime);
     } else {
         if(!isStart) return;
-        if(character->state == CHAR_STATE_UP && mElapsedUpTime < 0.5) 
+        if(character->state == CHAR_STATE_UP && character->currentSpeed >= 0) 
         {
             moveUp(character, frameTime);
             // gravitationModifier(character, frameTime);
