@@ -70,6 +70,9 @@ Bird* makeBird(const char *upTex,const char *midTex, const char *dowTex)
 }
 
 void releaseBird(Bird *c) {
+    UnloadTexture(c->textureUp);
+    UnloadTexture(c->textureMid);
+    UnloadTexture(c->textureDown);
     RL_FREE(c);
 }
 

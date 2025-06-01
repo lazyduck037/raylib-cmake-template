@@ -38,5 +38,6 @@ void BackgroundDraw(Background *bg, float frameTime) {
 
 void ReleaseBackGround(Background *bg) 
 {
+    UnloadTexture(bg->tex);
     RL_FREE(bg);
 }
