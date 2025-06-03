@@ -7,6 +7,10 @@
         "background.h": "c",
         "context.h": "c",
         "pipe.h": "c",
-        "raylib.h": "c"
+        "raylib.h": "c",
+        "algorithm": "c",
+        "format": "c",
+        "*.m": "c",
+        "resource.h": "c"
     }
 }

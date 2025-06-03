@@ -37,8 +37,11 @@ int main(void)
     baseBg->width = widthScreen;
 
     Bird *bird = makeBird(BLUE_BIRD_UPFLAP, BLUE_BIRD_MIDFLAP, BLUE_BIRD_DOWNFLAP);
-    
-    makePipes(PIPE_SCREEN, baseBg->tex.height, 300);
+   
+    Pipe **pipes;
+    int numberPipe;
+    makePipes(PIPE_SCREEN, baseBg->tex.height, 300, &pipes, &numberPipe);
+
     SetTargetFPS(fps);
 
     while (!WindowShouldClose())
@@ -52,7 +55,7 @@ int main(void)
             BackgroundDraw(baseBg, frameTime);
             drawBird(bird, frameTime);
             inputControl(bird, frameTime);
-            drawPipe(frameTime);
+            drawPipe(pipes, numberPipe, frameTime);
 
             DrawFPS(widthScreen - 25, 0);
           
@@ -62,6 +65,7 @@ int main(void)
     ReleaseBackGround(baseBg);
     ReleaseBackGround(bg);
     releaseBird(bird);
+    releasePipe(pipes, numberPipe);
     CloseWindow();
    
     return 0;

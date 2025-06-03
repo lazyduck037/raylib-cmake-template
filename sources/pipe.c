@@ -2,18 +2,13 @@
 #include "context.h"
 #include "define.h"
 
-#define PIPE_GAP 150
-#define PIPE_WIDTH 80
-
-const int PIPE_COUNT = 4;
-Pipe pipes[5];
 Texture2D bottomPipeTex;
 Texture2D topPipeTex;
 int screenHeight = 0;
 int screenWidth = 0;
 int mBaseHeight = 0;
 float mSpeed = 0;
-
+int lastX = 0;
 
 static void initPipe(Pipe *pipe, float x) 
 {
@@ -34,8 +29,9 @@ static void initPipe(Pipe *pipe, float x)
     pipe->passed = false; 
 }
 
-void makePipes(const char *pipe, int baseHeight, float speed) 
+void makePipes(const char *pipe, int baseHeight, float speed, Pipe ***outPipes, int *outNumber)
 {
+    Pipe **pipes;
     screenWidth = getContext()->widthScreen;
     screenHeight = getContext()->heightScreen;
     mBaseHeight = baseHeight;
@@ -50,11 +46,14 @@ void makePipes(const char *pipe, int baseHeight, float speed)
     topPipeTex = LoadTextureFromImage(pipeTopImage);
     UnloadImage(pipeTopImage);
 
-    for (int i = 0; i < PIPE_COUNT; i++) {
-        initPipe(&pipes[i], i * 200);
+    int numberPipe = (screenHeight / DISTANCE_BETWEEN_PIPE) + 1;
+    pipes = RL_MALLOC(numberPipe * sizeof(Pipe *));
+    for (int i = 0; i < numberPipe; i++) {
+        pipes[i] = RL_MALLOC(sizeof(Pipe));
+        initPipe(pipes[i], i * 200);
     }
-    // initPipe(&pipes[0], 0);
-    // initPipe(&pipes[1], 200);
+    *outPipes = pipes;
+    *outNumber = numberPipe;
 }
 
 
@@ -79,10 +78,26 @@ static void drawTopAndBotPipe(Pipe *pipe, float frameTime) {
 
 }
 
-void drawPipe(float frameTime) 
-{ 
-    for (int i = 0; i < PIPE_COUNT; i++) {
-        drawTopAndBotPipe(&pipes[i], frameTime);
+void drawPipe(Pipe **pipes,int numberPipe,float frameTime) 
+{
+    for (int i = 0; i < numberPipe; i++) {
+        drawTopAndBotPipe(pipes[i], frameTime);
+        if(pipes[i]->top.x < -pipes[i]->top.width) {
+            Pipe *last = pipes[numberPipe - 1];
+            if(lastX == 0) {
+                lastX = last->top.x + 200;
+            }
+            pipes[i]->top.x = lastX;
+            pipes[i]->bottom.x = lastX;
+        }
+    }   
+}
+
+void releasePipe(Pipe **pipes, int numberPipe) {
+    for (int i = 0; i < numberPipe; i++) {
+        RL_FREE(pipes[i]);
     }
-   
+    RL_FREE(pipes);
+    UnloadTexture(topPipeTex);
+    UnloadTexture(bottomPipeTex);
 }

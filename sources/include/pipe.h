@@ -13,7 +13,7 @@ struct Pipe {
 };
 typedef struct Pipe Pipe;
 
-void makePipes(const char *pipe, int baseHeight, float speed);
-void drawPipe(float frameTime);
-
+void makePipes(const char *pipe, int baseHeight, float speed, Pipe ***out, int *outNumber);
+void drawPipe(Pipe **pipes,int numberPipe,float frameTime);
+void releasePipe(Pipe **pipes, int numberPipe);
 #endif
