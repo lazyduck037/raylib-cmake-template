@@ -5,8 +5,11 @@
 #include <stdlib.h>
 
 struct Pipe {
-    Rectangle top;
-    Rectangle bottom;
+    Rectangle desTop;
+    Rectangle sourceTop;
+
+    Rectangle desBot;
+    Rectangle sourceBot;
     bool passed;
     Texture2D topTex;
     Texture2D botTex;

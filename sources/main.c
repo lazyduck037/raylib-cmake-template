@@ -8,17 +8,17 @@
 Rectangle fitScreen(int widthTex, int heightTex, int wScr, int hScr);
 float fitScale(int widthTex, int heightTex, int wScr, int hScr);
 
-void InitContex()
+void configContex()
 {
-    getContext()->widthScreen = 720;
-    getContext()->heightScreen = 1080;
+    getContext()->widthScreen = 480;
+    getContext()->heightScreen = 720;
     getContext()->title = "window";
     getContext()->fps = 60;
 }
 
 int main(void)
 {
-    InitContex();
+    configContex();
     
     int widthScreen = getContext()->widthScreen;
     int heightScreen = getContext()->heightScreen;
