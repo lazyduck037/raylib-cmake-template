@@ -15,7 +15,6 @@ typedef struct Background
     Context *context;
 } Background;
 
-
 Background* makeBackGround(const char* source, int speed);
 void BackgroundDraw(Background *bg, float frameTime);
 void ReleaseBackGround(Background *bg);

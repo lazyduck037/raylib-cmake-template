@@ -3,9 +3,9 @@
 
 #include "raylib.h"
 #include <stdlib.h>
+#include "context.h"
 
 struct Bird {
-    Vector2 location;
     float angle;
     float speed;
     Texture2D textureMid;
@@ -13,15 +13,14 @@ struct Bird {
     Texture2D textureDown;
     Texture2D curTex;
     Rectangle rectangle;
+    Rectangle des;
     int state;
-
+    Context *contex;
 };
 typedef struct Bird Bird;
-
 
 Bird* makeBird(const char *upTex,const char *midTex, const char *dowTex);
 void releaseBird(Bird*c);
 void drawBird(Bird *c, float frameTime);
 void inputControl(Bird *bird, float frameTime);
-
 #endif

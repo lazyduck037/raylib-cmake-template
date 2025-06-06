@@ -28,6 +28,9 @@ void BackgroundDraw(Background *bg, float frameTime) {
         REC(bg->currentPosMove, 0, bg->tex.width, bg->tex.height), 
         REC(bg->pos.x,bg->pos.y, bg->width, bg->height), IVEC2, 0, RAYWHITE
     );
+
+    if(bg->context->state != Start) return;
+    
     bool isMove = bg->speed > 0;
     if(isMove) {
         bg->currentPosMove += (frameSpeed/2);

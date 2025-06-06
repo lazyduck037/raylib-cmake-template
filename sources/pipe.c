@@ -1,45 +1,54 @@
 #include "pipe.h"
 #include "context.h"
 #include "define.h"
+#include <stdio.h>
 
-Texture2D bottomPipeTex;
+Texture2D pipeTex;
 int screenHeight = 0;
 int screenWidth = 0;
 int mBaseHeight = 0;
 float mSpeed = 0;
 int lastX = 0;
 
-static void initPipe(Pipe *pipe, float x) 
+static void initPipe(Pipe *pipe, float x, int pipeGap, int heightPipe) 
 {
-    float heightPipe = GetRandomValue(bottomPipeTex.height / 4, bottomPipeTex.height);
-    
-    pipe->topTex = bottomPipeTex;
-
-    pipe->sourceTop.width = pipe->topTex.width;
-    pipe->sourceTop.height = -(screenHeight - heightPipe - PIPE_GAP);
+    pipe->sourceTop.width = pipeTex.width;
+    pipe->sourceTop.height = -(screenHeight - heightPipe - pipeGap);
     pipe->sourceTop.x = 0;
     pipe->sourceTop.y = 0;
 
-    pipe->desTop.width = pipe->topTex.width;
-    pipe->desTop.height = screenHeight - heightPipe - PIPE_GAP;
+    pipe->desTop.width = pipeTex.width;
+    pipe->desTop.height = screenHeight - heightPipe - pipeGap;
     pipe->desTop.x = screenWidth + x;
     pipe->desTop.y = 0;
-   
 
-    pipe->botTex = bottomPipeTex;
-    pipe->sourceBot.width = pipe->botTex.width;
+    pipe->sourceBot.width = pipeTex.width;
     pipe->sourceBot.height = heightPipe;
     pipe->sourceBot.x = 0;
     pipe->sourceBot.y = 0;
 
-    
-    pipe->desBot.width = pipe->botTex.width;
+    pipe->desBot.width = pipeTex.width;
     pipe->desBot.height = heightPipe;
     pipe->desBot.x = screenWidth + x;
     pipe->desBot.y = screenHeight - pipe->desBot.height - mBaseHeight;
     
-    pipe->passed = false; 
+    pipe->contex = getContext();
 }
+
+static void updatePipe(Pipe *pipe, float x, int pipeGap, int heightPipe) 
+{
+    pipe->desTop.x = x;
+    pipe->desBot.x = x;
+
+    pipe->sourceTop.height = -(screenHeight - heightPipe - pipeGap);
+    pipe->desTop.height = screenHeight - heightPipe - pipeGap;
+
+    pipe->desBot.height = heightPipe;
+    pipe->sourceBot.height = heightPipe;
+
+    pipe->desBot.y = screenHeight - pipe->desBot.height - mBaseHeight;
+}
+
 
 void makePipes(const char *pipe, int baseHeight, float speed, Pipe ***outPipes, int *outNumber)
 {
@@ -50,14 +59,17 @@ void makePipes(const char *pipe, int baseHeight, float speed, Pipe ***outPipes, 
     mSpeed = speed;
 
     Image pipeBotImage = LoadImage(pipe);
-    bottomPipeTex = LoadTextureFromImage(pipeBotImage);
+    pipeTex = LoadTextureFromImage(pipeBotImage);
     UnloadImage(pipeBotImage);
 
-    int numberPipe = (screenHeight / DISTANCE_BETWEEN_PIPE) + 1;
+    int numberPipe = (screenWidth / DISTANCE_BETWEEN_PIPE) + 1;
     pipes = RL_MALLOC(numberPipe * sizeof(Pipe *));
     for (int i = 0; i < numberPipe; i++) {
         pipes[i] = RL_MALLOC(sizeof(Pipe));
-        initPipe(pipes[i], i * 200);
+        float heightPipe = GetRandomValue(pipeTex.height / 4, pipeTex.height);
+        int PIPE_GAP = GetRandomValue(MIN_PIPE_GAP, MAX_PIPE_GAP);
+        printf("Score: %d\n", PIPE_GAP);
+        initPipe(pipes[i], i * DISTANCE_BETWEEN_PIPE, PIPE_GAP, heightPipe);
     }
     *outPipes = pipes;
     *outNumber = numberPipe;
@@ -66,37 +78,24 @@ void makePipes(const char *pipe, int baseHeight, float speed, Pipe ***outPipes, 
 
 static void drawTopAndBotPipe(Pipe *pipe, float frameTime) {
     
-    float frameSpeed = (frameTime * mSpeed) / 2;
-   
-    pipe->desBot.x -= frameSpeed;
-    pipe->desTop.x = pipe->desBot.x;
-    // pipe->bottom.x -= frameSpeed;
-    // pipe->top.x = pipe->bottom.x;
-
-    // DrawTexturePro(pipe->topTex, 
-    //     REC(0,0, pipe->topTex.width, pipe->topTex.height), 
-    //     pipe->top, op
-    //     IVEC2, 0, RAYWHITE
-    // );
-    // DrawTexturePro(
-    //     pipe->botTex, 
-    //     REC(0,0, pipe->botTex.width, pipe->botTex.height - 100), 
-    //     REC(pipe->bottom.x, pipe->bottom.y + 100, pipe->bottom.width, pipe->bottom.height - 100), 
-    //     IVEC2, 0, RAYWHITE
-    // );
-     DrawTexturePro(
-        pipe->botTex, 
+    if(pipe->contex->state == Start) {
+        float frameSpeed = (frameTime * mSpeed) / 2;
+    
+        pipe->desBot.x -= frameSpeed;
+        pipe->desTop.x = pipe->desBot.x;
+    }
+    DrawTexturePro(
+        pipeTex, 
         pipe->sourceTop, 
         pipe->desTop, 
         IVEC2, 0, RAYWHITE
     );
     DrawTexturePro(
-        pipe->botTex, 
+        pipeTex, 
         pipe->sourceBot, 
         pipe->desBot, 
         IVEC2, 0, RAYWHITE
     );
-
 }
 
 void drawPipe(Pipe **pipes,int numberPipe,float frameTime) 
@@ -104,14 +103,30 @@ void drawPipe(Pipe **pipes,int numberPipe,float frameTime)
     for (int i = 0; i < numberPipe; i++) {
         drawTopAndBotPipe(pipes[i], frameTime);
         if(pipes[i]->desTop.x < -pipes[i]->desTop.width) {
-            Pipe *last = pipes[numberPipe - 1];
+            Pipe *last = pipes[numberPipe - 1];          
             if(lastX == 0) {
-                lastX = last->desTop.x + 200;
+               lastX = last->desTop.x + DISTANCE_BETWEEN_PIPE;
             }
-            pipes[i]->desTop.x = lastX;
-            pipes[i]->desBot.x = lastX;
+
+            float heightPipe = GetRandomValue(pipeTex.height / 4, pipeTex.height);
+            int PIPE_GAP = GetRandomValue(MIN_PIPE_GAP, MAX_PIPE_GAP);
+            updatePipe(pipes[i], lastX, PIPE_GAP, heightPipe);
+            
         }
     }   
+}
+
+
+bool checkHitPipe(Pipe **pipes, int numPipes,Bird * bird) {
+    for (int i = 0; i < numPipes; i++)
+    {
+        Pipe *pipe = pipes[i];
+        if (CheckCollisionRecs(bird->des, pipes[i]->desTop) ||
+            CheckCollisionRecs(bird->des, pipes[i]->desBot)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void releasePipe(Pipe **pipes, int numberPipe) {
@@ -119,5 +134,5 @@ void releasePipe(Pipe **pipes, int numberPipe) {
         RL_FREE(pipes[i]);
     }
     RL_FREE(pipes);
-    UnloadTexture(bottomPipeTex);
+    UnloadTexture(pipeTex);
 }

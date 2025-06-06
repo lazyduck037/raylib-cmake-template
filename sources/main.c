@@ -57,6 +57,10 @@ int main(void)
             inputControl(bird, frameTime);
             drawPipe(pipes, numberPipe, frameTime);
 
+            if(checkHitPipe(pipes, numberPipe, bird)) {
+                getContext()->state = Stop;
+            }
+
             DrawFPS(widthScreen - 25, 0);
           
         EndDrawing();

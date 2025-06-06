@@ -9,12 +9,15 @@
 #define JUMP_FORCE -17.0f
 #define GRAVITY 0.8f
 
-
 float mElapsedTime = 0.0f;
 bool isStart = false;
 int frameAnim = 0;
 
 static void updateAnimation(Bird *bird) {
+    if(bird->contex->state != Start) {
+        bird->curTex = bird->textureMid;
+        return;
+    }
     if(mElapsedTime >= 0.3f) {
         bird->state++;
         if(bird->state > 2) {
@@ -56,7 +59,6 @@ Bird* makeBird(const char *upTex,const char *midTex, const char *dowTex)
     
     Bird* bird = RL_MALLOC(sizeof(Bird));
 
-    bird->location = VEC2(60.0f, getContext()->heightScreen / 2);
     bird->state = CHAR_STATE_MID;
     bird->textureUp = birdUpTexture;
     bird->textureMid = birdMidTexture;
@@ -65,7 +67,8 @@ Bird* makeBird(const char *upTex,const char *midTex, const char *dowTex)
     bird->angle = 0;
     bird->speed = 25;
     bird->rectangle = REC(0, 0, (float)birdUpTexture.width, (float)birdUpTexture.height);
-
+    bird->des = REC(60.0f, getContext()->heightScreen / 2, (float)birdUpTexture.width, (float)birdUpTexture.height);
+    bird->contex = getContext();
     return bird;
 }
 
@@ -79,13 +82,13 @@ void releaseBird(Bird *c) {
 void drawBird(Bird *bird, float frameTime) {
     
     updateAnimation(bird);
-    Rectangle currentRectangle = REC(bird->location.x, bird->location.y, bird->rectangle.width, bird->rectangle.height);
-    DrawTexturePro(bird->curTex, bird->rectangle, currentRectangle, IVEC2, 0, RAYWHITE);
+    DrawTexturePro(bird->curTex, bird->rectangle, bird->des, IVEC2, 0, RAYWHITE);
     mElapsedTime += frameTime;
 }
 
 void inputControl(Bird *bird, float frameTime)
 {   
+    if(bird->contex->state == Stop) return;
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
         bird->speed = JUMP_FORCE;
         isStart = true;
@@ -95,5 +98,5 @@ void inputControl(Bird *bird, float frameTime)
     
     // Apply gravity
     bird->speed += GRAVITY;
-    bird->location.y += bird->speed;
+    bird->des.y += bird->speed;
 }

@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include <stdlib.h>
+#include "bird.h"
 
 struct Pipe {
     Rectangle desTop;
@@ -10,13 +11,12 @@ struct Pipe {
 
     Rectangle desBot;
     Rectangle sourceBot;
-    bool passed;
-    Texture2D topTex;
-    Texture2D botTex;
+    Context *contex;
 };
 typedef struct Pipe Pipe;
 
 void makePipes(const char *pipe, int baseHeight, float speed, Pipe ***out, int *outNumber);
 void drawPipe(Pipe **pipes,int numberPipe,float frameTime);
+bool checkHitPipe(Pipe **pipes, int numPipes, Bird * bird);
 void releasePipe(Pipe **pipes, int numberPipe);
 #endif

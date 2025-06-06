@@ -11,6 +11,8 @@
         "algorithm": "c",
         "format": "c",
         "*.m": "c",
-        "resource.h": "c"
+        "resource.h": "c",
+        "ostream": "c",
+        "stdio.h": "c"
     }
 }
