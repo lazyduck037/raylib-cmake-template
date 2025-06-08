@@ -114,7 +114,7 @@
         },
          {
             "label": "buildAll",
-            "command": "cd build ; ninja",
+            "command": "cd build ; rm *.exe;ninja",
             "type": "shell",
         },
     ]

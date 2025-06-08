@@ -13,6 +13,10 @@
         "*.m": "c",
         "resource.h": "c",
         "ostream": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "random": "c",
+        "istream": "c",
+        "limits": "c",
+        "string_view": "c"
     }
 }

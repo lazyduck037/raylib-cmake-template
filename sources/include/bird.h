@@ -7,6 +7,8 @@
 
 struct Bird {
     float angle;
+    float speedRotate;
+
     float speed;
     Texture2D textureMid;
     Texture2D textureUp;
@@ -16,11 +18,13 @@ struct Bird {
     Rectangle des;
     int state;
     Context *contex;
+    bool isFall;
 };
 typedef struct Bird Bird;
 
 Bird* makeBird(const char *upTex,const char *midTex, const char *dowTex);
 void releaseBird(Bird*c);
 void drawBird(Bird *c, float frameTime);
-void inputControl(Bird *bird, float frameTime);
+void inputControl(Bird *bird, int baseY,float frameTime);
+void fallBird(Bird *bird);
 #endif

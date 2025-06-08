@@ -4,14 +4,15 @@
 #include "resource.h"
 #include "context.h"
 #include "pipe.h"
+#include "define.h"
 
 Rectangle fitScreen(int widthTex, int heightTex, int wScr, int hScr);
 float fitScale(int widthTex, int heightTex, int wScr, int hScr);
 
 void configContex()
 {
-    getContext()->widthScreen = 480;
-    getContext()->heightScreen = 720;
+    getContext()->widthScreen = WIDTH_SCREEN;
+    getContext()->heightScreen = HEIGHT_SCREEN;
     getContext()->title = "window";
     getContext()->fps = 60;
 }
@@ -41,7 +42,7 @@ int main(void)
     Pipe **pipes;
     int numberPipe;
     makePipes(PIPE_SCREEN, baseBg->tex.height, 300, &pipes, &numberPipe);
-
+    int baseY = heightScreen - baseBg->height;
     SetTargetFPS(fps);
 
     while (!WindowShouldClose())
@@ -53,11 +54,17 @@ int main(void)
             
             BackgroundDraw(bg, frameTime);
             BackgroundDraw(baseBg, frameTime);
-            drawBird(bird, frameTime);
-            inputControl(bird, frameTime);
+           
             drawPipe(pipes, numberPipe, frameTime);
+            drawBird(bird, frameTime);
+            inputControl(bird, baseY, frameTime);
 
-            if(checkHitPipe(pipes, numberPipe, bird)) {
+            if(checkHitPipe(pipes, numberPipe, bird) || 
+               ((bird->des.y + bird->des.height) > baseY) ||
+                (bird->des.y <= 0)) {
+            
+                fallBird(bird);
+                
                 getContext()->state = Stop;
             }
 
