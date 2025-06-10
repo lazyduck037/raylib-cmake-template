@@ -32,7 +32,8 @@ static void initPipe(Pipe *pipe, float x, int rangeOfHeight, int gapHeight, int 
     pipe->desBot.height = rangeOfHeight - posGap - gapHeight;
     pipe->desBot.x = screenWidth + x;
     pipe->desBot.y = rangeOfHeight - pipe->desBot.height;
-    
+
+    pipe->isPass = false;
     pipe->contex = getContext();
 }
 
@@ -53,7 +54,7 @@ static void updatePipe(Pipe *pipe, float x, int pipeGap, int heightPipe)
     pipe->desBot.height = rangeOfHeight - posGap - gapHeight;
     pipe->sourceBot.height = rangeOfHeight - posGap - gapHeight;
     pipe->desBot.y = rangeOfHeight - pipe->desBot.height;
-
+    pipe->isPass = false;
     // pipe->sourceTop.height = -(screenHeight - heightPipe - pipeGap);
     // pipe->desTop.height = screenHeight - heightPipe - pipeGap;
 
@@ -136,16 +137,29 @@ void drawPipe(Pipe **pipes,int numberPipe,float frameTime)
 }
 
 
-bool checkHitPipe(Pipe **pipes, int numPipes,Bird * bird) {
+enum Collision checkHit(Pipe **pipes, int numPipes,Bird * bird) {
+    if((bird->des.y + bird->des.height) > screenHeight - mBaseHeight) {
+        return HitGround;
+    } else if (bird->des.y <= 0) {
+        return HitSky;
+    }
+    
     for (int i = 0; i < numPipes; i++)
     {
         Pipe *pipe = pipes[i];
         if (CheckCollisionRecs(bird->des, pipes[i]->desTop) ||
             CheckCollisionRecs(bird->des, pipes[i]->desBot)) {
-            return true;
+            return HitPipe;
+        } else {
+            float centerOfPipe = pipe->desTop.x + (pipe->desTop.width / 2);
+            float centerOfBird = bird->des.x + bird->des.width / 2;
+            if(!pipe->isPass && centerOfPipe <= centerOfBird) {
+            pipe->isPass = true;
+            return PassPipe;
+            }
         }
     }
-    return false;
+    return None;
 }
 
 void releasePipe(Pipe **pipes, int numberPipe) {

@@ -27,6 +27,7 @@ int main(void)
     int fps = getContext()->fps;
 
     InitWindow(widthScreen, heightScreen, title);
+    InitAudioDevice();
 
     Background *bg = makeBackGround(BACKGROUND_DAY, 300);
     bg->width = widthScreen;
@@ -59,13 +60,12 @@ int main(void)
             drawBird(bird, frameTime);
             inputControl(bird, baseY, frameTime);
 
-            if(checkHitPipe(pipes, numberPipe, bird) || 
-               ((bird->des.y + bird->des.height) > baseY) ||
-                (bird->des.y <= 0)) {
-            
-                fallBird(bird);
-                
+            enum Collision result = checkHit(pipes, numberPipe, bird);
+            if(result == HitPipe || result == HitGround || result == HitSky) {
+                playFallBird(bird);
                 getContext()->state = Stop;
+            } else if(result == PassPipe) {
+                playEarnPoint(bird);
             }
 
             DrawFPS(widthScreen - 25, 0);
@@ -77,6 +77,7 @@ int main(void)
     ReleaseBackGround(bg);
     releaseBird(bird);
     releasePipe(pipes, numberPipe);
+    CloseAudioDevice();    // Close audio device
     CloseWindow();
    
     return 0;

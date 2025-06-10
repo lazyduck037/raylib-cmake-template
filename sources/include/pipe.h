@@ -12,11 +12,20 @@ struct Pipe {
     Rectangle desBot;
     Rectangle sourceBot;
     Context *contex;
+    bool isPass;
 };
 typedef struct Pipe Pipe;
 
+enum Collision {
+  HitSky,
+  HitGround,
+  HitPipe,
+  PassPipe,
+  None
+};
+
 void makePipes(const char *pipe, int baseHeight, float speed, Pipe ***out, int *outNumber);
 void drawPipe(Pipe **pipes,int numberPipe,float frameTime);
-bool checkHitPipe(Pipe **pipes, int numPipes, Bird * bird);
+enum Collision checkHit(Pipe **pipes, int numPipes, Bird * bird);
 void releasePipe(Pipe **pipes, int numberPipe);
 #endif

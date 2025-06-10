@@ -19,6 +19,9 @@ struct Bird {
     int state;
     Context *contex;
     bool isFall;
+
+    //sound;
+    Sound wing, hit,die, point;
 };
 typedef struct Bird Bird;
 
@@ -26,5 +29,6 @@ Bird* makeBird(const char *upTex,const char *midTex, const char *dowTex);
 void releaseBird(Bird*c);
 void drawBird(Bird *c, float frameTime);
 void inputControl(Bird *bird, int baseY,float frameTime);
-void fallBird(Bird *bird);
+void playFallBird(Bird *bird);
+void playEarnPoint(Bird *bird);
 #endif
