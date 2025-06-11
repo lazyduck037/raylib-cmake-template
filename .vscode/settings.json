@@ -17,6 +17,9 @@
         "random": "c",
         "istream": "c",
         "limits": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "score.h": "c",
+        "cstdlib": "c",
+        "string.h": "c"
     }
 }

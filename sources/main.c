@@ -5,6 +5,7 @@
 #include "context.h"
 #include "pipe.h"
 #include "define.h"
+#include "score.h"
 
 Rectangle fitScreen(int widthTex, int heightTex, int wScr, int hScr);
 float fitScale(int widthTex, int heightTex, int wScr, int hScr);
@@ -44,6 +45,10 @@ int main(void)
     int numberPipe;
     makePipes(PIPE_SCREEN, baseBg->tex.height, 300, &pipes, &numberPipe);
     int baseY = heightScreen - baseBg->height;
+
+    Score* score = makeScore();
+    int numberScore = 0;
+
     SetTargetFPS(fps);
 
     while (!WindowShouldClose())
@@ -57,6 +62,7 @@ int main(void)
             BackgroundDraw(baseBg, frameTime);
            
             drawPipe(pipes, numberPipe, frameTime);
+            drawScore(score, numberScore);
             drawBird(bird, frameTime);
             inputControl(bird, baseY, frameTime);
 
@@ -65,6 +71,9 @@ int main(void)
                 playFallBird(bird);
                 getContext()->state = Stop;
             } else if(result == PassPipe) {
+                if(numberScore < MAX_SCORE){
+                    numberScore++;
+                }
                 playEarnPoint(bird);
             }
 
@@ -77,6 +86,7 @@ int main(void)
     ReleaseBackGround(bg);
     releaseBird(bird);
     releasePipe(pipes, numberPipe);
+    releaseScore(score);
     CloseAudioDevice();    // Close audio device
     CloseWindow();
    

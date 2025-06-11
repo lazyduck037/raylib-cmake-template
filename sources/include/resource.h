@@ -15,5 +15,17 @@
 
 #define PIPE_SCREEN ASSETS_PATH"sprites/pipe-green.png"
 
+#define SCORE_ZERO ASSETS_PATH"sprites/0.png"
+#define SCORE_ONE ASSETS_PATH"sprites/1.png"
+#define SCORE_TWO ASSETS_PATH"sprites/2.png"
+#define SCORE_THREE ASSETS_PATH"sprites/3.png"
+#define SCORE_FOUR ASSETS_PATH"sprites/4.png"
+#define SCORE_FIVE ASSETS_PATH"sprites/5.png"
+#define SCORE_SIX ASSETS_PATH"sprites/6.png"
+#define SCORE_SEVEN ASSETS_PATH"sprites/7.png"
+#define SCORE_EIGHT ASSETS_PATH"sprites/8.png"
+#define SCORE_NINE ASSETS_PATH"sprites/9.png"
+
+
 #endif
 

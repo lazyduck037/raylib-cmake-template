@@ -16,5 +16,6 @@
 #define GRAVITY 0.8f
 #define WIDTH_SCREEN 720
 #define HEIGHT_SCREEN 1080
+#define MAX_SCORE 999
 
 #endif
