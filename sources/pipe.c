@@ -10,6 +10,7 @@ int screenWidth = 0;
 int mBaseHeight = 0;
 float mSpeed = 0;
 int lastX = 0;
+bool isDrawPipe = false;
 
 static void initPipe(Pipe *pipe, float x, int rangeOfHeight, int gapHeight, int posGap) 
 {
@@ -120,6 +121,7 @@ static void drawTopAndBotPipe(Pipe *pipe, float frameTime) {
 
 void drawPipe(Pipe **pipes,int numberPipe,float frameTime) 
 {
+    if(!isDrawPipe) return;
     for (int i = 0; i < numberPipe; i++) {
         drawTopAndBotPipe(pipes[i], frameTime);
         if(pipes[i]->desTop.x < -pipes[i]->desTop.width) {
@@ -168,4 +170,8 @@ void releasePipe(Pipe **pipes, int numberPipe) {
     }
     RL_FREE(pipes);
     UnloadTexture(pipeTex);
+}
+
+void enablePipe() {
+    isDrawPipe = true;
 }

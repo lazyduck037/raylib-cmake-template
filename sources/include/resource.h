@@ -26,6 +26,8 @@
 #define SCORE_EIGHT ASSETS_PATH"sprites/8.png"
 #define SCORE_NINE ASSETS_PATH"sprites/9.png"
 
+#define USER_GUIDE ASSETS_PATH"sprites/message.png"
+#define GAME_OVER ASSETS_PATH"sprites/gameover.png"
 
 #endif
 

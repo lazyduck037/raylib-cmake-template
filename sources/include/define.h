@@ -4,6 +4,7 @@
 #define IVEC2 (Vector2){0, 0}
 #define VEC2(x,y) (Vector2){x, y}
 #define REC(x,y,w,h) (Rectangle){x,y, w, h}
+#define SimpleDraw(tex, x, y) DrawTexturePro(tex, REC(0, 0, tex.width, tex.height), REC(x, y, tex.width, tex.height), IVEC2, 0, RAYWHITE);
 
 #define MIN_HEIGHT_PIPE 35
 #define MAX_PIPE_GAP 240

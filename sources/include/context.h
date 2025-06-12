@@ -2,6 +2,7 @@
 #define CONTEXT_H
 enum GameState {
     Menu,
+    Guide,
     Start,
     Stop,
     End

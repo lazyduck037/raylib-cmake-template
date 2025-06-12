@@ -13,6 +13,7 @@ typedef struct Background
     Texture2D tex;
     float currentPosMove;
     Context *context;
+    bool isMove;
 } Background;
 
 Background* makeBackGround(const char* source, int speed);

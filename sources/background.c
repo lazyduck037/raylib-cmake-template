@@ -16,6 +16,7 @@ Background* makeBackGround(const char* source, int speed)
     bg->width = backgroundTexture.width;
     bg->height = backgroundTexture.height;
     bg->currentPosMove = 0;
+    bg->isMove = true;
     return bg;
 }
 
@@ -31,8 +32,7 @@ void BackgroundDraw(Background *bg, float frameTime) {
 
     if(bg->context->state != Start) return;
     
-    bool isMove = bg->speed > 0;
-    if(isMove) {
+    if(bg->speed > 0 && bg->isMove) {
         bg->currentPosMove += (frameSpeed/2);
         if(bg->currentPosMove >= widthScreen)
             bg->currentPosMove = 0;

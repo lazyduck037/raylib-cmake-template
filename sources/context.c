@@ -5,7 +5,7 @@ Context g_context = {
     .heightScreen = 0.0f,
     .title = "title",
     .fps = 60,
-    .state = Start
+    .state = Menu
 };
 
 

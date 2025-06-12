@@ -25,7 +25,7 @@ bool isPlaySoundDie = false;
 bool isPlaySoundHit = false;
 
 static void updateAnimation(Bird *bird) {
-    if(bird->contex->state != Start) {
+    if(bird->contex->state == Stop) {
         bird->curTex = bird->textureMid;
         return;
     }
@@ -79,7 +79,7 @@ Bird* makeBird(const char *upTex,const char *midTex, const char *dowTex)
     bird->speed = 25;
     bird->speedRotate = 0;
     bird->rectangle = REC(0, 0, (float)birdUpTexture.width, (float)birdUpTexture.height);
-    bird->des = REC(60.0f, getContext()->heightScreen / 2, (float)birdUpTexture.width, (float)birdUpTexture.height);
+    bird->des = REC(getContext()->widthScreen / 6, getContext()->heightScreen / 2, (float)birdUpTexture.width, (float)birdUpTexture.height);
     bird->contex = getContext();
     bird->isFall = false;
 
@@ -125,30 +125,34 @@ void playEarnPoint(Bird *bird) {
     PlaySound(bird->point);
 }
 
-void inputControl(Bird *bird, int baseY,float frameTime)
+void jumbBird(Bird *bird) {
+    bird->speed = JUMP_FORCE;
+    bird->angle = 0.0f;
+    bird->speedRotate = -1.5;
+    if(!isStart) {
+        isStart = true;
+    } 
+}
+
+int inputControl(Bird *bird, int baseY,float frameTime)
 {   
+    int key = -1;
     if(bird->contex->state != Stop) {
-        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            bird->speed = JUMP_FORCE;
-            bird->angle = 0.0f;
-            bird->speedRotate = -1.5;
-            if(!isStart) {
-                isStart = true;
-            } else {
-               
-            }
+        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            key = MOUSE_BUTTON_LEFT;
+            jumbBird(bird);
             PlaySound(bird->wing);
         } 
     }
 
-    if(!isStart) return;
+    if(!isStart) return key;
     
     if(bird->des.y + bird->des.height >= baseY) {
         if(!isPlaySoundDie) {
             isPlaySoundDie = true;
             PlaySound(bird->die);
         }
-        return;
+        return key;
     }
     // Apply gravity
     bird->speed += GRAVITY;
@@ -172,4 +176,5 @@ void inputControl(Bird *bird, int baseY,float frameTime)
         bird->angle = fmin(45, bird->angle);
     }
     lastDirection = isUp;
+    return key;
 }

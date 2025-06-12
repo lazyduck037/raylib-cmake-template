@@ -27,5 +27,6 @@ enum Collision {
 void makePipes(const char *pipe, int baseHeight, float speed, Pipe ***out, int *outNumber);
 void drawPipe(Pipe **pipes,int numberPipe,float frameTime);
 enum Collision checkHit(Pipe **pipes, int numPipes, Bird * bird);
+void enablePipe();
 void releasePipe(Pipe **pipes, int numberPipe);
 #endif
